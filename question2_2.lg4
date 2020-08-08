@@ -1,0 +1,101 @@
+!四天内考虑宽度的最佳k值 ;
+model:
+sets:
+  Number/1..43/: numbers, lengths;
+  Width/1..43/:width;
+  Width_or_rank/1..4/:width_rank,width_rank_number;
+
+  wait_need_number1/1..7/:wait_need_rank_1;
+  wait_need_number2/1..2/:wait_need_rank_2;
+  wait_need_number3/1/:wait_need_rank_3;
+
+  Width_rank_1 /1..20/:width_rank_1;
+  Width_rank_2 /1..16/:width_rank_2;
+  Width_rank_3 /1..5/:width_rank_3;
+  Width_rank_4 /1..2/:width_rank_4;
+
+
+  !TODO:模式i: 1..p;
+  X/1..p/: x_model;
+
+!需完成的工料编号 ;
+  Waiting/1..10/: wait;
+  !wait_all = 3,7,9,12,15,18,20,25,28,36;
+  !四天需完成的编号分类 ;
+  wait_need_rank_1 = 7,9,15,18,20,25,36;7
+  wait_need_rank_2 = 12,28;2
+  wait_need_rank_3 = 3;1
+
+  ！宽度相同的编号分类 ;
+  width_rank_1 = 1,4,7,9,10,11,14,15,16,18,20,21,25,30,32,34,36,38,40,41;20
+  width_rank_2 = 2,5,8,12,19,23,24,26,28,29,31,33,33,35,39,42;16
+  width_rank_3 = 3,6,17,27,37,43;5
+  width_rank_4 = 13,22;2
+
+  
+
+!r(j,i):第i中模式下j类相同宽度材料所需数量;
+  Relation(Width_or_rank, X): r;
+endsets
+
+data:
+  wait = 3,7,9,12,15,8,20,25,28,36;
+  numbers = 4,216,104,38,4,60,4,8,6,10,
+         8,2,4,8,8,2,8,301,6,38,
+         30,8,4,4,34,18,4,4,90,30,
+         30,212,108,482,196,8,32,4,52,42,
+         8,8,8,60,136,4,68,286,502,286,
+         292,57,24;
+
+  lengths = 1743,1680,1532,1477,1313,1285,1232,1217,1180,1177,
+         1105,1055,1046,1032,1030,975,893,882,847,845,
+         830,795,766,745,732,719,714,690,665,633,
+         630,600,590,588,582,578,540,488,455,434,
+         420,415,414,411,405,328,313,290,275,265,
+         255,184,155;
+
+    width = 30,20,50,30,20,50,30,20,30,30,
+        30,20,35,30,30,30,50,30,20,30,
+        30,35,20,20,30,20,50,20,20,30,
+        20,30,20,30,20,30,50,30,20,30,
+        30,20,50;
+    
+    !宽度数值分类 ; 
+    width_rank = 30,20,50,35;
+
+    !width_rank_number 各宽度值所需的每种材料总和
+!#TODO 
+    width_rank_number = ;
+
+
+!含0输出 ;
+@text('D:/out_question2_2.txt') = r; 
+enddata
+
+!目标函数;
+min = cost;
+cost = @sum(X(i): x_model(i));
+
+!约束条件;
+@for(Width_or_rank(j):
+   @sum(X(i): x_model(i)*r(j, i)) = width_rank_number(j));
+
+@for(X(i):
+   @sum(Width_or_rank(j): width_rank(j)* r(j,i) <= 100);
+
+@for(X(i):
+   @sum(Width_or_rank(j): width_rank(j)* r(j,i) >= 20);
+
+@for(Number(j): @for(X(i): @gin(r(j, i))));
+
+@for(X(i): @gin(x_model(i)));
+
+
+!迭代限制条件 ;
+@for(X(i) | i #lt# 53: x_model(i) < x_model(i+1)); 
+
+!matlab计算的最大最小耗费 ;
+!#TODO  ; 
+@bnd(x, cost, y);
+
+end

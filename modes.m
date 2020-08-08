@@ -20,13 +20,13 @@ wait = [wait_4, wait_6];
 
 %求最小所需原材料数
 sum = 0;
-% N = 11;
+N = 11;
 % N = 20;
-N = 53;
+% N = 53;
 for i = 1:1:N
-%     sum = sum+Ls(wait_4(i))*Ns(wait_4(i));
+    sum = sum+Ls(wait_4(i))*Ns(wait_4(i));
 %    sum = sum+Ls(wait(i))*Ns(wait(i));
-    sum = sum+Ls(i)*Ns(i);
+%     sum = sum+Ls(i)*Ns(i);
 end
 minVal = floor(sum/3000)+1;
 disp(['最小值', num2str(minVal)]);
@@ -34,9 +34,9 @@ disp(['最小值', num2str(minVal)]);
 %求最大所需原材料数
 sum = 0;
 for i = 1:1:N
-%     sum = sum+floor(Ns(wait_4(i))/floor(3000/Ls(wait_4(i))))+1;
+    sum = sum+floor(Ns(wait_4(i))/floor(3000/Ls(wait_4(i))))+1;
 %    sum = sum+floor(Ns(wait(i))/floor(3000/Ls(wait(i))))+1;
-    sum = sum+floor(Ns(i)/floor(3000/Ls(i)))+1;
+%     sum = sum+floor(Ns(i)/floor(3000/Ls(i)))+1;
 end
 maxVal = sum;
 disp(['最大值', num2str(maxVal)]);

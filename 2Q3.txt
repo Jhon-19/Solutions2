@@ -1,0 +1,51 @@
+model:
+sets:
+  Number/1..43/: numbers, widths;
+  Width_need_rank2/1..2/:width_need_rank_2;
+
+  !TODO:模式i: 1..m;
+  X/1..2/: x_model;
+
+endsets
+
+data:
+ 
+  width_need_rank_2 = 1, 2;
+  
+  numbers = ;
+
+  widths = 30, 20, 50, 35;
+
+enddata
+
+!目标函数;
+min = cost;
+cost = @sum(X(i): x_model(i));
+
+!约束条件;
+@for(Width_need_rank2(j):
+   @sum(X(i): x_model(i)*r(width_need_rank_2(j), i)) = numbers(width_need_rank_2(j)));
+
+@for(X(i):
+   @sum(Width_need_rank2(j):
+    lengths(width_need_rank2(j))*r(width_need_rank_2(j), i)) >= 488);
+
+@for(X(i):
+   @sum(Width_need_rank2(j):
+    lengths(width_need_rank2(j))*r(width_need_rank_2(j), i)) <= 3000);
+
+
+@for(Number(j): @for(X(i): @gin(r(j, i))));
+
+@for(X(i): @gin(x_model(i)));
+
+!尝试80,160,240;
+@sum(X(i): x_model)<= 80;
+
+!迭代限制条件 ;
+@for(X(i) | i #lt# 2: x_model(i) < x_model(i+1)); 
+
+!matlab计算的最大最小耗费 ;
+@bnd(14, cost, 18);
+
+end

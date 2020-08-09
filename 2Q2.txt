@@ -1,0 +1,59 @@
+model:
+sets:
+  Number/1..43/: numbers, lengths;
+  Width_need_rank2/1..2/:width_need_rank_2;
+
+  !TODO:模式i: 1..m;
+  X/1..2/: x_model;
+
+endsets
+
+data:
+ 
+  width_need_rank_2 = 12,28;
+  
+  numbers = 24	6	12	24	24	6	24	1001	20	108 
+			90	40	12	12	68	54	10	12	270	90 
+			90	612	508	2082	496	24	62	20	162	92 
+			40	24	40	180	536	12	128	686	2002	686 
+			 692	357	52;
+
+  lengths = 1105	1055	1046	1032	1030	975	893	882	847	845
+			830	795	766	745	732	719	714	690	665	633
+			630	600	590	588	582	578	540	488	455	434
+			420	415	414	411	405	328	313	290	275	265
+			255	184	155;
+
+enddata
+
+!目标函数;
+min = cost;
+cost = @sum(X(i): x_model(i));
+
+!约束条件;
+@for(Width_need_rank2(j):
+   @sum(X(i): x_model(i)*r(width_need_rank_2(j), i)) = numbers(width_need_rank_2(j)));
+
+@for(X(i):
+   @sum(Width_need_rank2(j):
+    lengths(width_need_rank2(j))*r(width_need_rank_2(j), i)) >= 488);
+
+@for(X(i):
+   @sum(Width_need_rank2(j):
+    lengths(width_need_rank2(j))*r(width_need_rank_2(j), i)) <= 3000);
+
+
+@for(Number(j): @for(X(i): @gin(r(j, i))));
+
+@for(X(i): @gin(x_model(i)));
+
+!尝试80,160,240;
+@sum(X(i): x_model)<= 80;
+
+!迭代限制条件 ;
+@for(X(i) | i #lt# 2: x_model(i) < x_model(i+1)); 
+
+!matlab计算的最大最小耗费 ;
+@bnd(14, cost, 18);
+
+end

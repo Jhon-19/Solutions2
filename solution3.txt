@@ -42,17 +42,17 @@ enddata
 
 !目标函数;
 min = cost;
-cost = @sum(X(i): x_model(i));
+cost = @sum(X(i): x_model(i))+271;
 
 !约束条件;
-@for(Waiting(j) | j #gt# 20:
-   @sum(X(i) | i #gt# 22: x_model(i)*r(wait(j), i)) = numbers(wait(j)));
+@for(Waiting(j):
+   @sum(X(i): x_model(i)*r(wait(j), i)) = numbers(wait(j)));
 
-@for(X(i) | i #gt# 22:
-   @sum(Waiting(j) | j #gt# 20: (5+lengths(wait(j)))*r(wait(j), i))-5  <= 3000);
+@for(X(i):
+   @sum(Waiting(j): (5+lengths(wait(j)))*r(wait(j), i))-5  <= 3000);
 
-@for(X(i) | i #gt# 22:
-   @sum(Waiting(j) | j #gt# 20: (5+lengths(wait(j)))*r(wait(j), i))-5  >= 155);
+@for(X(i):
+   @sum(Waiting(j): (5+lengths(wait(j)))*r(wait(j), i))-5  >= 155);
 
 !将变量约束为整数;
 @for(Number(j): @for(X(i): @gin(r(j, i))));
@@ -62,91 +62,10 @@ cost = @sum(X(i): x_model(i));
 !matlab计算的最大最小耗费 ;
 @bnd(792, cost, 1028);
 
-!上一方案求出的结果;
-x_model(1) = 2;
-x_model(2) = 4;
-x_model(3) = 6;
-x_model(4) = 8;
-x_model(5) = 8;
-x_model(6) = 8;
-x_model(7) = 8;
-x_model(8) = 8;
-x_model(9) = 8;
-x_model(10) = 8;
-x_model(11) = 12;
-x_model(12) = 12;
-x_model(13) = 12;
-x_model(14) = 13;
-x_model(15) = 13;
-x_model(16) = 21;
-x_model(17) = 4;
-x_model(18) = 4;
-x_model(19) = 20;
-x_model(20) = 22;
-x_model(21) = 32;
-x_model(22) = 38;
-r(4, 22) = 1;
-r(5, 2) = 1;
-r(7, 2) = 1;
-r(9, 3) = 1;
-r(11, 17) = 1;
-r(11, 18) = 1;
-r(12, 1) = 1;
-r(15, 7) = 1;
-r(18, 3) = 1;
-r(18, 4) = 2;
-r(18, 5) = 3;
-r(18, 6) = 3;
-r(18, 8) = 2;
-r(18, 9) = 2;
-r(18, 11) = 2;
-r(18, 12) = 2;
-r(18, 13) = 3;
-r(18, 14) = 1;
-r(18, 15) = 3;
-r(18, 16) = 3;
-r(20, 3) = 1;
-r(20, 4) = 1;
-r(20, 11) = 1;
-r(20, 12) = 1;
-r(24, 18) = 1;
-r(25, 7) = 1;
-r(25, 14) = 2;
-r(28, 1) = 2;
-r(29, 17) = 1;
-r(29, 18) = 1;
-r(29, 20) = 2;
-r(29, 22) = 1;
-r(32, 19) = 2;
-r(32, 20) = 2;
-r(32, 21) = 4;
-r(36, 7) = 1;
-r(38, 17) = 1;
-r(40, 19) = 1;
-r(40, 20) = 1;
-r(46, 17) = 1;
-r(48, 1) = 1;
-r(48, 2) = 1;
-r(48, 4) = 1;
-r(48, 5) = 1;
-r(48, 6) = 1;
-r(48, 7) = 2;
-r(48, 8) = 4;
-r(48, 9) = 4;
-r(48, 10) = 10;
-r(48, 11) = 1;
-r(48, 12) = 1;
-r(48, 13) = 1;
-r(48, 14) = 2;
-r(48, 15) = 1;
-r(48, 16) = 1;
-r(50, 17) = 1;
-r(50, 18) = 1;
-r(50, 19) = 5;
-r(50, 21) = 2;
-r(50, 22) = 3;
+@gin(cost);
+
 
 !迭代限制条件 ;
-@for(X(i) | i #lt# 80 #and# i #gt# 22: x_model(i) < x_model(i+1)); 
+@for(X(i) | i #lt# 80: x_model(i) < x_model(i+1)); 
 
 end

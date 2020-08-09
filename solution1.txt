@@ -53,6 +53,9 @@ cost = @sum(X(i): x_model(i));
 
 @for(X(i): @gin(x_model(i)));
 
+@gin(cost);
+
+
 @sum(X(i): x_model)<= 400;
 
 !此处上限需要与上面k保持一致;
